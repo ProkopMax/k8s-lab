@@ -15,7 +15,7 @@ resource "local_file" "ansible_inventory" {
 }
 
 resource "local_file" "kubespray_inventory" {
-  filename = "${path.module}/../kubespray/inventory/k8s-lab/inventory.ini"
+  filename = "${path.module}/../kubespray-2.32/inventory/k8s-lab/inventory.ini"
 
   content = templatefile(
     "${path.module}/templates/kubespray-inventory.ini.tftpl",
