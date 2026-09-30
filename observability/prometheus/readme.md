@@ -3,7 +3,8 @@ helm repo update
 
 kubectl create namespace observability
 
-helm upgrade --install prometheus prometheus-community/prometheus \
+helm upgrade --install kube-prometheus-stack \
+  prometheus-community/kube-prometheus-stack \
   --kubeconfig=${HOME}/.kube/config \
   -n observability \
   -f observability/prometheus/values.yaml

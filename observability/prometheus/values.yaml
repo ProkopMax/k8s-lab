@@ -1,27 +1,68 @@
-server:
-  persistentVolume:
-    enabled: true
-    storageClass: nfs
-    size: 30Gi
+grafana:
+  enabled: true
 
-  retention: 30d
+  persistence:
+    enabled: true
+    storageClassName: nfs
+    size: 10Gi
 
   resources:
     requests:
-      cpu: 200m
+      cpu: 100m
       memory: 256Mi
     limits:
       cpu: 1
-      memory: 2Gi
+      memory: 1Gi
+
 
 alertmanager:
-  enabled: false
-
-pushgateway:
-  enabled: false
-
-kube-state-metrics:
   enabled: true
 
-prometheus-node-exporter:
+  alertmanagerSpec:
+    storage:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: nfs
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 10Gi
+
+
+prometheus:
   enabled: true
+
+  prometheusSpec:
+
+    retention: 30d
+
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: nfs
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 30Gi
+
+    resources:
+      requests:
+        cpu: 200m
+        memory: 256Mi
+      limits:
+        cpu: 1
+        memory: 2Gi
+
+
+kubeStateMetrics:
+  enabled: true
+
+
+nodeExporter:
+  enabled: true
+
+
+defaultRules:
+  create: true
