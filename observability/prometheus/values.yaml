@@ -1,0 +1,27 @@
+server:
+  persistentVolume:
+    enabled: true
+    storageClass: nfs
+    size: 30Gi
+
+  retention: 30d
+
+  resources:
+    requests:
+      cpu: 200m
+      memory: 256Mi
+    limits:
+      cpu: 1
+      memory: 2Gi
+
+alertmanager:
+  enabled: false
+
+pushgateway:
+  enabled: false
+
+kube-state-metrics:
+  enabled: true
+
+prometheus-node-exporter:
+  enabled: true
