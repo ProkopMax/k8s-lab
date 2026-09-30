@@ -1,0 +1,12 @@
+---
+chrony_timezone: Europe/Moscow
+
+chrony_servers:
+  - "time.nist.gov iburst"
+
+chrony_pool:
+  - "pool.ntp.org iburst"
+
+chrony_params:
+  - "makestep 1.0 3"
+  - "rtcsync"

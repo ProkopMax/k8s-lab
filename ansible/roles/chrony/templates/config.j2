@@ -1,0 +1,9 @@
+{% for server in chrony_servers %}
+server {{ server }}
+{% endfor %}
+{% for pool in chrony_pool %}
+pool {{ pool }}
+{% endfor %}
+{% for params in chrony_params %}
+{{ params }}
+{% endfor %}

@@ -1,0 +1,31 @@
+---
+- name: Install chrony
+  ansible.builtin.apt:
+    name: chrony
+    state: present
+    update_cache: true
+
+- name: Set timezone
+  community.general.timezone:
+    name: "{{ chrony_timezone }}"
+
+- name: Remove Ubuntu NTP pools
+  ansible.builtin.file:
+    path: /etc/chrony/sources.d/ubuntu-ntp-pools.sources
+    state: absent
+  notify: Restart chrony
+
+- name: Configure custom NTP sources
+  ansible.builtin.template:
+    src: config.j2
+    dest: /etc/chrony/sources.d/k8s-lab.sources
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart chrony
+
+- name: Enable and start chrony
+  ansible.builtin.systemd:
+    name: chrony
+    enabled: true
+    state: started

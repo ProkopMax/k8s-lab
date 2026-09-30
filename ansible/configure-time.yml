@@ -1,0 +1,7 @@
+---
+- name: Configure time synchronization
+  hosts: all
+  become: true
+
+  roles:
+    - chrony

@@ -1,0 +1,29 @@
+[all]
+%{ for name, node in nodes ~}
+${name} ansible_host=${node.ip} ip=${node.ip}
+%{ endfor ~}
+
+[all:vars]
+ansible_user=${username}
+
+[kube_control_plane]
+%{ for name, node in control_plane_nodes ~}
+${name}
+%{ endfor ~}
+
+[etcd]
+%{ for name, node in control_plane_nodes ~}
+${name}
+%{ endfor ~}
+
+[kube_node]
+%{ for name, node in worker_nodes ~}
+${name}
+%{ endfor ~}
+
+[calico_rr]
+
+[k8s_cluster:children]
+kube_control_plane
+kube_node
+calico_rr

@@ -1,0 +1,28 @@
+[all]
+%{ for name, node in nodes ~}
+${name} ansible_host=${node.ip} ip=${node.ip}
+%{ endfor ~}
+
+[all:vars]
+ansible_user=${username}
+
+[kubernetes]
+%{ for name, node in nodes ~}
+%{ if node.role == "control-plane" || node.role == "worker" ~}
+${name}
+%{ endif ~}
+%{ endfor ~}
+
+[kubernetes_control_plane]
+%{ for name, node in nodes ~}
+%{ if node.role == "control-plane" ~}
+${name}
+%{ endif ~}
+%{ endfor ~}
+
+[kubernetes_workers]
+%{ for name, node in nodes ~}
+%{ if node.role == "worker" ~}
+${name}
+%{ endif ~}
+%{ endfor ~}

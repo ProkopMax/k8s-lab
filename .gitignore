@@ -1,0 +1,12 @@
+# Terraform
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.*
+terraform/*.tfvars
+
+# Ansible
+ansible/*.retry
+
+# OS / editors
+.DS_Store
+*.swp
