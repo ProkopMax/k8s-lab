@@ -1,0 +1,47 @@
+tempo:
+  reportingEnabled: false
+
+  retention: 24h
+
+  storage:
+    trace:
+      backend: local
+      local:
+        path: /var/tempo/traces
+
+  receivers:
+    otlp:
+      protocols:
+        grpc:
+          endpoint: "0.0.0.0:4317"
+        http:
+          endpoint: "0.0.0.0:4318"
+
+  metricsGenerator:
+    enabled: false
+
+    remoteWriteUrl: ""
+
+    registry:
+      external_labels:
+        source: tempo
+        cluster: kind
+
+    storage:
+      path: "/var/tempo/generator"
+
+    traces_storage:
+      path: "/var/tempo/generator/traces"
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 1Gi
+
+persistence:
+  enabled: true
+  storageClassName: nfs
+  size: 10Gi
