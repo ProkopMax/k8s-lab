@@ -3,6 +3,16 @@ sudo systemctl enable --now ollama
 sudo systemctl status ollama --no-pager
 curl -s http://localhost:11434/api/tags
 
+sudo mkdir -p /etc/systemd/system/ollama.service.d
+
+sudo tee /etc/systemd/system/ollama.service.d/override.conf > /dev/null <<'EOF'
+[Service]
+Environment="OLLAMA_HOST=0.0.0.0:11434"
+EOF
+
+sudo systemctl daemon-reload
+sudo systemctl restart ollama
+
 ollama pull qwen2.5-coder:14b-instruct-q4_K_M
 ollama pull qwen3-coder:30b-a3b-q4_K_M
 ollama pull nomic-embed-text
