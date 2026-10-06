@@ -9,7 +9,6 @@ resource "libvirt_cloudinit_disk" "node" {
       hostname = each.key
       username = var.vm_user
       password = var.vm_password
-      ip       = each.value.ip
     }
   )
 
@@ -17,6 +16,14 @@ resource "libvirt_cloudinit_disk" "node" {
     instance-id: ${each.key}
     local-hostname: ${each.key}
   EOF
+
+  network_config = templatefile(
+    "${path.module}/templates/network-config.yaml.tftpl",
+    {
+      ip  = each.value.ip
+      mac = each.value.mac
+    }
+  )
 }
 
 resource "libvirt_volume" "cloudinit" {

@@ -25,15 +25,7 @@ resource "libvirt_network" "default" {
         ranges = [
           {
             start = "192.168.122.2"
-            end   = "192.168.122.199"
-          }
-        ]
-
-        hosts = [
-          for name, node in var.nodes : {
-            name = name
-            mac  = node.mac
-            ip   = node.ip
+            end   = "192.168.122.99"
           }
         ]
       }
