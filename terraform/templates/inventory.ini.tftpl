@@ -26,3 +26,10 @@ ${name}
 ${name}
 %{ endif ~}
 %{ endfor ~}
+
+[gitlab]
+%{ for name, node in nodes ~}
+%{ if node.role == "gitlab" ~}
+${name}
+%{ endif ~}
+%{ endfor ~}
