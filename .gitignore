@@ -1,8 +1,8 @@
 # Terraform
 terraform/.terraform/
-terraform/*.tfstate
-terraform/*.tfstate.*
-terraform/*.tfvars
+# terraform/*.tfstate
+# terraform/*.tfstate.*
+# terraform/*.tfvars
 
 # Ansible
 ansible/*.retry
