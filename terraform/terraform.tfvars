@@ -34,7 +34,8 @@ nodes = {
     mac       = "52:54:00:aa:bb:04"
     role      = "gitlab"
     cpu       = 2
-    memory_mb = 6144
-    disk_gb   = 40
+    memory_mb = 8192
+    disk_gb   = 80
   }
 }
+
