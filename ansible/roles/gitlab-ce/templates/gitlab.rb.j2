@@ -1,0 +1,14 @@
+# GitLab configuration file
+# This file is managed by Ansible
+
+## GitLab URL
+external_url '{{ gitlab_external_url }}'
+
+## Timezone
+gitlab_rails['time_zone'] = '{{ gitlab_time_zone }}'
+
+## Backup settings
+gitlab_rails['backup_keep_time'] = {{ gitlab_backup_keep_time }}
+
+## GitLab administrator password (will be set during installation)
+# gitlab_rails['initial_root_password'] = '{{ gitlab_admin_password }}'

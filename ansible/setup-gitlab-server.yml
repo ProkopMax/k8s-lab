@@ -1,0 +1,8 @@
+---
+- name: Setup GitLab server
+  hosts: gitlab
+  become: true
+
+  roles:
+    - base
+    - gitlab-ce

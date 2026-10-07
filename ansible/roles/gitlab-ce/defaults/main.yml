@@ -1,0 +1,20 @@
+---
+# Default variables for GitLab CE role
+
+# GitLab version to install
+gitlab_version: "17.4.2-ce.0"
+
+# GitLab Omnibus package repository URL
+gitlab_repo_url: "https://packages.gitlab.com/gitlab/gitlab-ce/gpgkey"
+
+# GitLab configuration
+gitlab_external_url: "http://gitlab.example.com"
+gitlab_time_zone: "Europe/Moscow"
+gitlab_backup_keep_time: 604800
+
+# GitLab administrator password (will be set during installation)
+gitlab_admin_password: "ChangeMe123"
+
+# GitLab packages to install
+gitlab_packages:
+  - gitlab-ce

@@ -1,0 +1,6 @@
+---
+- name: Reconfigure GitLab
+  ansible.builtin.command: gitlab-ctl reconfigure
+  args:
+    chdir: /
+  changed_when: true
