@@ -13,3 +13,20 @@
     name: "{{ base_packages }}"
     state: present
     update_cache: false
+
+- name: Copy CA certificate to VMs
+  ansible.builtin.copy:
+    src: ../../../certs/ca/k8s-lab-root-ca.crt
+    dest: /usr/local/share/ca-certificates/k8s-lab-root-ca.crt
+    mode: '0644'
+    owner: root
+    group: root
+  notify: update-ca-certificates
+
+- name: Ensure CA certificate directory exists
+  ansible.builtin.file:
+    path: /usr/local/share/ca-certificates
+    state: directory
+    mode: '0755'
+    owner: root
+    group: root
