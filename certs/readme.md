@@ -23,3 +23,15 @@ openssl req \
   -key /tmp/gitlab.k8s.lab.key \
   -out /tmp/gitlab.k8s.lab.csr \
   -config /tmp/gitlab-openssl.cnf
+
+openssl x509 \
+  -req \
+  -in /tmp/gitlab.k8s.lab.csr \
+  -CA ~/certs/tls.crt \
+  -CAkey ~/certs/tls.key \
+  -CAcreateserial \
+  -out ~/k8s-lab/certs/gitlab/gitlab.k8s.lab.crt \
+  -days 825 \
+  -sha256 \
+  -extensions req_ext \
+  -extfile /tmp/gitlab-openssl.cnf

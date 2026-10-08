@@ -10,3 +10,11 @@ ansible/*.retry
 # OS / editors
 .DS_Store
 *.swp
+
+# TLS private keys
+*.key
+*.pem
+certs/private/
+
+# Ansible Vault password
+.vault_pass
