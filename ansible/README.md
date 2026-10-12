@@ -24,7 +24,7 @@ The Ansible configuration is used to:
 
 To run a playbook:
 ```bash
-ansible-playbook -i inventory.ini playbooks/<playbook-name>.yml
+ansible-playbook -i inventory.ini <playbook-name>.yml
 ```
 
 ## Rules
@@ -33,3 +33,11 @@ ansible-playbook -i inventory.ini playbooks/<playbook-name>.yml
 - Keep secrets in Ansible Vault
 - Make tasks idempotent
 - Do not manage the host firewall
+
+## GitLab Configuration
+
+GitLab is configured with:
+- HTTPS access at https://gitlab.k8s.lab
+- SSL certificate from certs/gitlab/gitlab.k8s.lab.crt
+- Private key stored in Ansible Vault (vault_gitlab_ssl_key variable)
+- GitLab Runner disabled

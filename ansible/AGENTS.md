@@ -44,3 +44,12 @@ Before changing files:
 4. Run syntax/configuration validation.
 5. Show the diff.
 6. Do not apply destructive changes without confirmation.
+
+## GitLab CE Optimization
+
+The GitLab CE role has been optimized to:
+- Use HTTPS with proper SSL certificate
+- Disable GitLab Runner installation
+- Use Ansible Vault for private key management
+- Be idempotent
+- Support the domain gitlab.k8s.lab
