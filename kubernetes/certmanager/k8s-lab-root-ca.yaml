@@ -1,0 +1,23 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: k8s-lab-root-ca
+  namespace: cert-manager
+spec:
+  isCA: true
+
+  commonName: k8s.lab Root CA
+
+  secretName: k8s-lab-root-ca
+
+  duration: 87600h
+  renewBefore: 720h
+
+  privateKey:
+    algorithm: RSA
+    size: 4096
+
+  issuerRef:
+    name: selfsigned-bootstrap
+    kind: ClusterIssuer
+    group: cert-manager.io
