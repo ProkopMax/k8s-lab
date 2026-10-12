@@ -1,32 +1,35 @@
-# GitLab CE Omnibus Installation
+# Ansible
 
-This project contains Ansible playbooks and roles for installing GitLab CE Omnibus on Ubuntu servers.
+This directory contains Ansible playbooks and roles for configuring the infrastructure in the Kubernetes lab.
+
+## Overview
+
+The Ansible configuration is used to:
+- Configure operating systems on VMs
+- Install and configure applications on VMs
+- Manage system services and settings
 
 ## Structure
 
-- `roles/gitlab-ce/` - Role for installing and configuring GitLab CE
-  - `defaults/main.yml` - Default variables for GitLab installation
-  - `tasks/main.yml` - Main tasks for GitLab installation
-  - `handlers/main.yml` - Handlers for GitLab reconfiguration
-  - `templates/gitlab.rb.j2` - Configuration template for GitLab
-
-- `install-gitlab.yml` - Playbook to install GitLab CE on a server
-- `setup-gitlab-server.yml` - Playbook to setup a complete GitLab server (base + gitlab-ce)
+- `roles/` - Contains reusable Ansible roles for different components
+- `group_vars/` - Group variable definitions
+- `inventory.ini` - Inventory file defining hosts and groups
+- Playbooks:
+  - `prepare-nodes.yml` - Prepare nodes for Kubernetes deployment
+  - `configure-time.yml` - Configure time synchronization
+  - `install-gitlab.yml` - Install GitLab CE
+  - `setup-gitlab-server.yml` - Setup GitLab server configuration
 
 ## Usage
 
-1. Ensure your inventory.ini contains a host group [gitlab-server] with your GitLab server details
-2. Run the setup playbook:
-   ```bash
-   ansible-playbook setup-gitlab-server.yml
-   ```
+To run a playbook:
+```bash
+ansible-playbook -i inventory.ini playbooks/<playbook-name>.yml
+```
 
-## Variables
+## Rules
 
-The following variables can be customized in `roles/gitlab-ce/defaults/main.yml`:
-
-- `gitlab_version`: Version of GitLab to install
-- `gitlab_external_url`: External URL for GitLab
-- `gitlab_time_zone`: Time zone for GitLab
-- `gitlab_backup_keep_time`: Backup retention time
-- `gitlab_admin_password`: Initial admin password (will be set during installation)
+- Use roles for organizing code
+- Keep secrets in Ansible Vault
+- Make tasks idempotent
+- Do not manage the host firewall
