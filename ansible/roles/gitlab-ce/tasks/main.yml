@@ -1,12 +1,14 @@
 ---
 - name: Add GitLab package repository key
-  ansible.builtin.apt_key:
-    url: "{{ gitlab_repo_url }}"
-    state: present
+  ansible.builtin.shell: |
+    curl -fsSL "{{ gitlab_repo_url }}gpgkey" | gpg --dearmor > /etc/apt/trusted.gpg.d/gitlab.gpg
+  args:
+    creates: /etc/apt/trusted.gpg.d/gitlab.gpg
+  changed_when: false
 
 - name: Add GitLab package repository
   ansible.builtin.apt_repository:
-    repo: "deb https://packages.gitlab.com/gitlab/gitlab-ce/ubuntu/ {{ ansible_distribution_release }} main"
+    repo: "deb {{ gitlab_repo_url }}ubuntu/ {{ ansible_facts['distribution_release'] }} main"
     state: present
     filename: gitlab-ce
     update_cache: true
@@ -50,12 +52,5 @@
     dest: /etc/gitlab/gitlab.rb
     owner: root
     group: root
-    mode: "0644"
+    mode: "0600"
   notify: Reconfigure GitLab
-
-- name: Run GitLab reconfigure
-  ansible.builtin.command: gitlab-ctl reconfigure
-  args:
-    chdir: /
-  register: gitlab_reconfigure_result
-  changed_when: true
