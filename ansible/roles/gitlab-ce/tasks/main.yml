@@ -36,11 +36,21 @@
     mode: "0644"
   loop:
     - { src: "../../../certs/gitlab/gitlab.k8s.lab.crt", dest: "/etc/gitlab/ssl/gitlab.k8s.lab.crt" }
+    - { src: "../../../certs/registry/registry.k8s.lab.crt", dest: "/etc/gitlab/ssl/registry.k8s.lab.crt" }
 
 - name: Copy GitLab private key
   ansible.builtin.copy:
     content: "{{ vault_gitlab_ssl_key }}"
     dest: /etc/gitlab/ssl/gitlab.k8s.lab.key
+    owner: root
+    group: root
+    mode: "0600"
+  no_log: true
+
+- name: Copy GitLab Registry private key
+  ansible.builtin.copy:
+    content: "{{ vault_gitlab_registry_ssl_key }}"
+    dest: /etc/gitlab/ssl/registry.k8s.lab.key
     owner: root
     group: root
     mode: "0600"

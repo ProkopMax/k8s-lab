@@ -33,6 +33,21 @@ gitlab_rails['ldap_enabled'] = {{ gitlab_rails_ldap_enabled | lower }}
 
 # Disable GitLab Container Registry
 registry['enable'] = {{ gitlab_registry_enable | lower }}
+registry_external_url '{{ gitlab_registry_external_url }}'
+gitlab_rails['registry_enabled'] = {{ gitlab_registry_enable | lower }}
+
+registry_nginx['enable'] = {{ gitlab_registry_nginx_enable | lower }}
+registry_nginx['ssl_certificate'] = '{{ gitlab_registry_ssl_certificate }}'
+registry_nginx['ssl_certificate_key'] = '{{ gitlab_registry_ssl_certificate_key }}'
+registry_nginx['listen_port'] = {{ gitlab_registry_nginx_port }}
+registry_nginx['listen_https'] = {{ gitlab_registry_nginx_https_enabled | lower }}
+
+## Registry storage
+registry['storage'] = {
+  'filesystem' => {
+    'rootdirectory' => '{{ gitlab_registry_storage_path }}'
+  }
+}
 
 ## Additional optimizations
 # Enable backup compression to save disk space
