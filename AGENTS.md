@@ -1,4 +1,4 @@
-# AI Agent Instructions
+# AI Agent Instructions.
 
 ## Project
 
