@@ -24,7 +24,7 @@ The Ansible configuration is used to:
 
 To run a playbook:
 ```bash
-ansible-playbook -i inventory.ini <playbook-name>.yml
+ansible-playbook -i inventory.ini <playbook-name>.yml --ask-vault-pass -k
 ```
 
 ## Rules

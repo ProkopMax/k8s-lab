@@ -81,3 +81,32 @@ nginx['worker_connections'] = {{ gitlab_nginx_worker_connections }}
 
 # Enable GitLab's built-in Prometheus metrics
 gitlab_rails['prometheus_enabled'] = {{ gitlab_rails_prometheus_enabled | lower }}
+
+# External Prometheus monitoring
+{% if gitlab_monitoring_enabled %}
+{% if gitlab_monitoring_exporters.node_exporter.enabled %}
+node_exporter['listen_address'] = '{{ gitlab_monitoring_exporters.node_exporter.listen_address }}'
+{% endif %}
+
+{% if gitlab_monitoring_exporters.gitlab_exporter.enabled %}
+gitlab_exporter['listen_address'] = '{{ gitlab_monitoring_exporters.gitlab_exporter.listen_address }}'
+gitlab_exporter['listen_port'] = '{{ gitlab_monitoring_exporters.gitlab_exporter.listen_port }}'
+{% endif %}
+
+{% if gitlab_monitoring_exporters.postgres_exporter.enabled %}
+postgres_exporter['listen_address'] = '{{ gitlab_monitoring_exporters.postgres_exporter.listen_address }}'
+{% endif %}
+
+{% if gitlab_monitoring_exporters.redis_exporter.enabled %}
+redis_exporter['listen_address'] = '{{ gitlab_monitoring_exporters.redis_exporter.listen_address }}'
+{% endif %}
+
+{% if gitlab_monitoring_exporters.gitlab_workhorse.enabled %}
+gitlab_workhorse['prometheus_listen_addr'] = '{{ gitlab_monitoring_exporters.gitlab_workhorse.prometheus_listen_addr }}'
+{% endif %}
+
+{% if gitlab_monitoring_exporters.gitaly.enabled %}
+gitaly['configuration'] ||= {}
+gitaly['configuration']['prometheus_listen_addr'] = '{{ gitlab_monitoring_exporters.gitaly.prometheus_listen_addr }}'
+{% endif %}
+{% endif %}

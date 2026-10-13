@@ -1,0 +1,36 @@
+loki.source.journal "system" {
+  max_age = "{{ alloy_journal_max_age }}"
+
+  labels = {
+    host        = "{{ inventory_hostname }}",
+    environment = "{{ alloy_environment }}",
+    job         = "systemd-journal",
+  }
+
+  forward_to = [loki.write.default.receiver]
+}
+
+loki.write "default" {
+  endpoint {
+    url = "{{ alloy_loki_url }}"
+  }
+}
+
+{% for log in alloy_extra_log_files %}
+local.file_match "extra_{{ loop.index }}" {
+  path_targets = [
+    {
+      "__path__"   = "{{ log.path }}",
+      "host"       = "{{ inventory_hostname }}",
+      "environment" = "{{ alloy_environment }}",
+      "job"        = "{{ log.job }}",
+      "component"  = "{{ log.component }}",
+    },
+  ]
+}
+
+loki.source.file "extra_{{ loop.index }}" {
+  targets    = local.file_match.extra_{{ loop.index }}.targets
+  forward_to = [loki.write.default.receiver]
+}
+{% endfor %}

@@ -80,3 +80,35 @@ gitlab_nginx_worker_connections: 1024
 
 # Enable GitLab's built-in Prometheus metrics
 gitlab_rails_prometheus_enabled: true
+
+
+# GitLab external monitoring
+gitlab_monitoring_enabled: true
+
+gitlab_monitoring_address: "192.168.122.104"
+
+gitlab_monitoring_exporters:
+  node_exporter:
+    enabled: true
+    listen_address: "{{ gitlab_monitoring_address }}:9100"
+
+  gitlab_exporter:
+    enabled: true
+    listen_address: "{{ gitlab_monitoring_address }}"
+    listen_port: 9168
+
+  postgres_exporter:
+    enabled: true
+    listen_address: "{{ gitlab_monitoring_address }}:9187"
+
+  redis_exporter:
+    enabled: true
+    listen_address: "{{ gitlab_monitoring_address }}:9121"
+
+  gitlab_workhorse:
+    enabled: true
+    prometheus_listen_addr: "{{ gitlab_monitoring_address }}:9229"
+
+  gitaly:
+    enabled: true
+    prometheus_listen_addr: "{{ gitlab_monitoring_address }}:9236"

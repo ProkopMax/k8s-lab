@@ -7,3 +7,6 @@ helm upgrade --install loki \
   --version 7.3.0 \
   -n observability \
   -f observability/loki/values.yaml
+
+kubectl apply -f observability/loki/loki-loadbalancer.yaml \
+  --kubeconfig="${HOME}/.kube/config"

@@ -1,0 +1,7 @@
+---
+- name: Install Grafana Alloy on Linux VMs
+  hosts: gitlab
+  become: true
+
+  roles:
+    - grafana-alloy

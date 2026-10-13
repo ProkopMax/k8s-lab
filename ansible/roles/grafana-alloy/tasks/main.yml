@@ -1,0 +1,63 @@
+---
+- name: Install dependencies
+  ansible.builtin.apt:
+    name:
+      - ca-certificates
+      - gpg
+    state: present
+    update_cache: true
+
+- name: Create APT keyrings directory
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Download Grafana APT signing key
+  ansible.builtin.get_url:
+    url: https://apt.grafana.com/gpg-full.key
+    dest: /etc/apt/keyrings/grafana.asc
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Configure Grafana APT repository
+  ansible.builtin.apt_repository:
+    repo: >-
+      deb [signed-by=/etc/apt/keyrings/grafana.asc]
+      https://apt.grafana.com stable main
+    filename: grafana
+    state: present
+    update_cache: true
+
+- name: Install Grafana Alloy
+  ansible.builtin.apt:
+    name: alloy
+    state: present
+
+- name: Add Alloy to journal-reading groups
+  ansible.builtin.user:
+    name: alloy
+    groups:
+      - adm
+      - systemd-journal
+    append: true
+  notify: Restart Grafana Alloy
+
+- name: Configure Grafana Alloy
+  ansible.builtin.template:
+    src: config.alloy.j2
+    dest: /etc/alloy/config.alloy
+    owner: root
+    group: alloy
+    mode: "0640"
+    validate: "/usr/bin/alloy validate %s"
+  notify: Restart Grafana Alloy
+
+- name: Enable and start Grafana Alloy
+  ansible.builtin.systemd:
+    name: alloy
+    enabled: true
+    state: started
