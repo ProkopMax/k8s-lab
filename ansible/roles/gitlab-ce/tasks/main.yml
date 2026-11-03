@@ -18,6 +18,7 @@
     name: "{{ gitlab_packages }}"
     state: present
     update_cache: true
+  environment: "{{ proxy_env | default({}) }}"
 
 - name: Create SSL directory
   ansible.builtin.file:

@@ -43,8 +43,8 @@ gitlab_registry_external_url: "https://registry.k8s.lab"
 gitlab_registry_ssl_certificate: "/etc/gitlab/ssl/registry.k8s.lab.crt"
 gitlab_registry_ssl_certificate_key: "/etc/gitlab/ssl/registry.k8s.lab.key"
 gitlab_registry_nginx_enable: true
-gitlab_registry_nginx_port: 5050
-gitlab_registry_nginx_https_enabled: false
+# gitlab_registry_nginx_port: 5050
+gitlab_registry_nginx_https_enabled: true
 # Registry storage
 gitlab_registry_storage_path: "/var/opt/gitlab/gitlab-rails/shared/registry"
 
