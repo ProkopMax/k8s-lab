@@ -1,0 +1,46 @@
+---
+- name: Check AppArmor parser
+  ansible.builtin.stat:
+    path: "{{ containerd_apparmor_parser }}"
+  register: containerd_apparmor_parser_stat
+
+- name: Ensure AppArmor parser is installed
+  ansible.builtin.assert:
+    that:
+      - containerd_apparmor_parser_stat.stat.exists
+    fail_msg: >-
+      AppArmor parser not found at {{ containerd_apparmor_parser }}.
+      Install apparmor-utils or correct containerd_apparmor_parser.
+
+- name: Install containerd AppArmor profile
+  ansible.builtin.template:
+    src: cri-containerd.apparmor.d.j2
+    dest: "{{ containerd_apparmor_profile_path }}"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Load containerd AppArmor profile
+  ansible.builtin.command:
+    argv:
+      - "{{ containerd_apparmor_parser }}"
+      - -Kr
+      - "{{ containerd_apparmor_profile_path }}"
+  changed_when: false
+
+- name: Create containerd systemd drop-in directory
+  ansible.builtin.file:
+    path: "{{ containerd_apparmor_systemd_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Configure AppArmor profile loading before containerd startup
+  ansible.builtin.template:
+    src: 10-apparmor-profile.conf.j2
+    dest: "{{ containerd_apparmor_systemd_dir }}/{{ containerd_apparmor_systemd_dropin }}"
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Reload systemd daemon

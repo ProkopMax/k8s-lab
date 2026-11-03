@@ -1,0 +1,8 @@
+---
+- name: Configure containerd AppArmor profile
+  hosts: kubernetes
+  become: true
+  serial: 1
+
+  roles:
+    - containerd-apparmor

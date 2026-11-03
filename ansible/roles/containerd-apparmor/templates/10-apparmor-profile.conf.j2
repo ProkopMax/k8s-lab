@@ -1,0 +1,2 @@
+[Service]
+ExecStartPre={{ containerd_apparmor_parser }} -Kr {{ containerd_apparmor_profile_path }}

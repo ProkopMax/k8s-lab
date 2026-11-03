@@ -1,0 +1,14 @@
+---
+# containerd 2.3.7 default AppArmor profile
+containerd_apparmor_profile_name: cri-containerd.apparmor.d
+containerd_apparmor_profile_path: /etc/apparmor.d/cri-containerd.apparmor.d
+
+# AppArmor parser
+containerd_apparmor_parser: /usr/sbin/apparmor_parser
+
+# Profile used by the containerd daemon itself
+containerd_apparmor_daemon_profile: unconfined
+
+# systemd drop-in
+containerd_apparmor_systemd_dir: /etc/systemd/system/containerd.service.d
+containerd_apparmor_systemd_dropin: 10-apparmor-profile.conf
