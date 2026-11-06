@@ -31,6 +31,13 @@ runners:
         [runners.kubernetes.node_selector]
           "k8s-lab/ci-worker" = "true"
 
+        [[runners.kubernetes.volumes.secret]]
+          name = "{{ gitlab_runner_tls_secret_name }}"
+          mount_path = "/etc/containers/certs.d/registry.k8s.lab"
+          read_only = true
+          [runners.kubernetes.volumes.secret.items]
+            "{{ gitlab_runner_ca_cert_key }}" = "ca.crt"
+
         [[runners.kubernetes.volumes.empty_dir]]
           name = "buildah-cache"
           mount_path = "/cache"
