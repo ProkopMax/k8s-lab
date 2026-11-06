@@ -28,6 +28,10 @@ runners:
         privileged = false
         poll_timeout = 600
 
+        [runners.kubernetes.build_container_security_context]
+          [runners.kubernetes.build_container_security_context.app_armor_profile]
+            type = "Unconfined"
+
         [runners.kubernetes.node_selector]
           "k8s-lab/ci-worker" = "true"
 
