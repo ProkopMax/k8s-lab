@@ -1,0 +1,44 @@
+gitlabUrl: "{{ gitlab_runner_gitlab_url }}"
+
+certsSecretName: "{{ gitlab_runner_tls_secret_name }}"
+
+concurrent: 1
+checkInterval: 3
+
+rbac:
+  create: true
+  clusterWideAccess: false
+  rules: {{ gitlab_runner_rbac_rules | to_json }}
+
+serviceAccount:
+  create: true
+  name: gitlab-runner-buildkit
+
+runners:
+  secret: "{{ gitlab_runner_token_secrets.buildkit }}"
+  jobNamespace: "{{ gitlab_runner_job_namespace }}"
+  config: |
+    [[runners]]
+      name = "k8s-lab-buildkit"
+      executor = "kubernetes"
+
+      [runners.kubernetes]
+        namespace = "{{ gitlab_runner_job_namespace }}"
+        image = "moby/buildkit:rootless"
+        privileged = false
+        poll_timeout = 600
+
+        [runners.kubernetes.node_selector]
+          "k8s-lab/ci-worker" = "true"
+
+        [[runners.kubernetes.volumes.empty_dir]]
+          name = "buildkit-cache"
+          mount_path = "/cache"
+
+nodeSelector:
+  {{ gitlab_runner_worker_label.key }}: "{{ gitlab_runner_worker_label.value }}"
+
+resources:
+  {{ gitlab_runner_manager_resources | to_nice_yaml(indent=2) | indent(2) }}
+
+unregisterRunners: false

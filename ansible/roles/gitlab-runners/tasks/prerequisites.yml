@@ -1,0 +1,119 @@
+---
+- name: Validate GitLab Runner configuration
+  ansible.builtin.assert:
+    that:
+      - gitlab_runner_gitlab_url | length > 0
+      - gitlab_runner_namespace | length > 0
+      - gitlab_runner_chart_version | length > 0
+      - gitlab_runner_worker_nodes | length > 0
+      - gitlab_runner_ca_cert_file | length > 0
+    fail_msg: "GitLab Runner configuration is incomplete."
+
+- name: Check CA certificate on Ansible controller
+  ansible.builtin.stat:
+    path: "{{ gitlab_runner_ca_cert_file }}"
+  register: gitlab_runner_ca_stat
+  delegate_to: localhost
+  become: false
+
+- name: Validate CA certificate
+  ansible.builtin.assert:
+    that:
+      - gitlab_runner_ca_stat.stat.exists
+      - gitlab_runner_ca_stat.stat.isreg
+      - gitlab_runner_ca_stat.stat.readable
+    fail_msg: >-
+      CA certificate not found or not readable:
+      {{ gitlab_runner_ca_cert_file }}
+
+- name: Inspect CA certificate
+  ansible.builtin.command:
+    argv:
+      - openssl
+      - x509
+      - -in
+      - "{{ gitlab_runner_ca_cert_file }}"
+      - -noout
+      - -ext
+      - basicConstraints
+  register: gitlab_runner_ca_constraints
+  changed_when: false
+  delegate_to: localhost
+  become: false
+
+- name: Validate CA certificate constraints
+  ansible.builtin.assert:
+    that:
+      - "'CA:TRUE' in gitlab_runner_ca_constraints.stdout"
+    fail_msg: "The specified certificate is not a CA certificate."
+
+- name: Check kubeconfig on Ansible controller
+  ansible.builtin.stat:
+    path: "{{ gitlab_runner_kubeconfig }}"
+  register: gitlab_runner_kubeconfig_stat
+  delegate_to: localhost
+  become: false
+
+- name: Validate kubeconfig
+  ansible.builtin.assert:
+    that:
+      - gitlab_runner_kubeconfig_stat.stat.exists
+      - gitlab_runner_kubeconfig_stat.stat.isreg
+      - gitlab_runner_kubeconfig_stat.stat.readable
+    fail_msg: >-
+      Kubeconfig not found or not readable:
+      {{ gitlab_runner_kubeconfig }}
+
+- name: Check Helm availability
+  ansible.builtin.command:
+    argv:
+      - helm
+      - version
+      - --short
+  register: gitlab_runner_helm_version
+  changed_when: false
+  delegate_to: localhost
+  become: false
+
+- name: Display Helm version
+  ansible.builtin.debug:
+    msg: "{{ gitlab_runner_helm_version.stdout }}"
+
+- name: Add GitLab Helm repository
+  kubernetes.core.helm_repository:
+    name: "{{ gitlab_runner_helm_repo_name }}"
+    repo_url: "{{ gitlab_runner_helm_repo_url }}"
+    state: present
+  delegate_to: localhost
+  become: false
+
+- name: Update GitLab Helm repository
+  ansible.builtin.command:
+    argv:
+      - helm
+      - repo
+      - update
+      - "{{ gitlab_runner_helm_repo_name }}"
+  register: gitlab_runner_helm_repo_update
+  changed_when: "'Update Complete' in gitlab_runner_helm_repo_update.stdout"
+  delegate_to: localhost
+  become: false
+
+- name: Label Kubernetes worker nodes for CI jobs
+  kubernetes.core.k8s:
+    kubeconfig: "{{ gitlab_runner_kubeconfig }}"
+    context: "{{ gitlab_runner_context | default(omit, true) }}"
+    state: patched
+    definition:
+      apiVersion: v1
+      kind: Node
+      metadata:
+        name: "{{ item }}"
+        labels: >-
+          {{ {
+            gitlab_runner_worker_label.key:
+            gitlab_runner_worker_label.value
+          } }}
+  loop: "{{ gitlab_runner_worker_nodes }}"
+  delegate_to: localhost
+  become: false

@@ -1,0 +1,24 @@
+
+---
+- name: Deploy GitLab Runner Helm releases
+  become: false
+  kubernetes.core.helm:
+    name: "{{ item.release }}"
+    chart_ref: "{{ gitlab_runner_helm_chart }}"
+    chart_version: "{{ gitlab_runner_chart_version }}"
+    release_namespace: "{{ gitlab_runner_namespace }}"
+    kubeconfig: "{{ gitlab_runner_kubeconfig }}"
+    context: "{{ gitlab_runner_context | default(omit, true) }}"
+    create_namespace: false
+    state: present
+    wait: true
+    timeout: 600s
+    values: >-
+      {{ lookup('ansible.builtin.template',
+                role_path + '/templates/' + item.values_template) | from_yaml }}
+  loop:
+    - release: gitlab-runner-buildkit
+      values_template: buildkit-values.yaml.j2
+    - release: gitlab-runner-buildah
+      values_template: buildah-values.yaml.j2
+  no_log: true

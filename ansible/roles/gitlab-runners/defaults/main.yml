@@ -1,0 +1,129 @@
+
+---
+# GitLab connection
+gitlab_runner_gitlab_url: "https://gitlab.k8s.lab"
+
+# Helm
+gitlab_runner_helm_repo_name: gitlab
+gitlab_runner_helm_repo_url: "https://charts.gitlab.io"
+gitlab_runner_helm_chart: "gitlab/gitlab-runner"
+
+# Set an explicit chart version after checking:
+# helm search repo -l gitlab/gitlab-runner
+gitlab_runner_chart_version: "0.94.3"
+
+# Kubernetes
+gitlab_runner_namespace: gitlab-runners
+gitlab_runner_kubeconfig: "{{ lookup('env', 'HOME') }}/.kube/config"
+gitlab_runner_context: ""
+
+# Worker node placement.
+# Both worker nodes will receive this label in prerequisites.yml.
+gitlab_runner_worker_nodes:
+  - k8s-worker-01
+  - k8s-worker-02
+
+gitlab_runner_worker_label:
+  key: "k8s-lab/ci-worker"
+  value: "true"
+
+# TLS
+gitlab_runner_tls_enabled: true
+gitlab_runner_tls_secret_name: gitlab-runner-ca
+gitlab_runner_ca_cert_file: "../certs/ca/k8s-lab-root-ca.crt"
+gitlab_runner_ca_cert_key: "gitlab.k8s.lab.crt"
+
+# Runner namespace and execution
+gitlab_runner_concurrent: 1
+gitlab_runner_check_interval: 3
+gitlab_runner_job_namespace: "{{ gitlab_runner_namespace }}"
+
+# Job Pod placement
+gitlab_runner_job_node_selector:
+  "k8s-lab/ci-worker": "true"
+
+# Manager Pod placement
+gitlab_runner_manager_node_selector:
+  "k8s-lab/ci-worker": "true"
+
+# Job Pod resource defaults
+gitlab_runner_job_resources:
+  requests:
+    cpu: "500m"
+    memory: "512Mi"
+  limits:
+    cpu: "2"
+    memory: "4Gi"
+
+# Runner Manager resources
+gitlab_runner_manager_resources:
+  requests:
+    cpu: "100m"
+    memory: "128Mi"
+  limits:
+    cpu: "500m"
+    memory: "512Mi"
+
+# Kubernetes executor RBAC.
+# Keep permissions namespace-scoped.
+gitlab_runner_rbac_rules:
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["list"]
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["create", "delete", "get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["pods/attach", "pods/exec"]
+    verbs: ["create", "delete", "get", "patch"]
+  - apiGroups: [""]
+    resources: ["pods/log"]
+    verbs: ["get", "list"]
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["create", "delete", "get", "update"]
+  - apiGroups: [""]
+    resources: ["serviceaccounts"]
+    verbs: ["get"]
+  - apiGroups: [""]
+    resources: ["services"]
+    verbs: ["create", "get"]
+
+# Runner definitions
+gitlab_runner_instances:
+  - name: buildkit
+    release: gitlab-runner-buildkit
+    description: "k8s-lab BuildKit Instance Runner"
+    tag: buildkit
+    image: "moby/buildkit:rootless"
+    storage_driver: ""
+    privileged: false
+    concurrent: 1
+    cache:
+      type: emptyDir
+      medium: ""
+      size_limit: "5Gi"
+
+  - name: buildah
+    release: gitlab-runner-buildah
+    description: "k8s-lab Buildah Instance Runner"
+    tag: buildah
+    image: "quay.io/buildah/stable"
+    storage_driver: vfs
+    privileged: false
+    concurrent: 1
+    cache:
+      type: emptyDir
+      medium: ""
+      size_limit: "5Gi"
+
+# Security defaults
+gitlab_runner_run_untagged: false
+gitlab_runner_locked: false
+gitlab_runner_protected: false
+
+# Runner registration tokens are provided through Ansible Vault.
+# Do not define actual tokens in defaults or regular group_vars.
+gitlab_runner_token_secrets:
+  buildkit: gitlab-runner-buildkit-token
+  buildah: gitlab-runner-buildah-token

@@ -1,0 +1,12 @@
+---
+- name: Run prerequisites
+  ansible.builtin.import_tasks: prerequisites.yml
+
+- name: Create Runner namespace
+  ansible.builtin.import_tasks: namespace.yml
+
+- name: Configure Runner secrets
+  ansible.builtin.import_tasks: secrets.yml
+
+- name: Deploy GitLab Runner releases
+  ansible.builtin.import_tasks: releases.yml
