@@ -3,10 +3,12 @@
   ansible.builtin.apt:
     update_cache: true
     cache_valid_time: 3600
+  environment: "{{ proxy_env | default({}) }}"
 
 - name: Upgrade all packages
   ansible.builtin.apt:
     upgrade: dist
+  environment: "{{ proxy_env | default({}) }}"
 
 - name: Install base packages
   ansible.builtin.apt:
