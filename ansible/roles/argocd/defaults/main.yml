@@ -21,3 +21,15 @@ argocd_server_service_type: ClusterIP
 
 argocd_redis_image_repository: redis
 argocd_redis_image_tag: "8.6.4-alpine"
+
+# Gateway API
+argocd_ingress_enabled: true
+argocd_ingress_name: argocd
+argocd_ingress_hostname: argocd.k8s.lab
+
+argocd_gateway_name: main-gateway
+argocd_gateway_namespace: gateway-system
+argocd_gateway_section_name: https
+
+argocd_server_service_name: argocd-server
+argocd_server_service_port: 80

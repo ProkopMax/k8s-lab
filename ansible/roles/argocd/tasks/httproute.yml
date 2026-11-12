@@ -1,0 +1,32 @@
+---
+- name: Create Argo CD HTTPRoute
+  become: false
+  kubernetes.core.k8s:
+    kubeconfig: "{{ argocd_kubeconfig }}"
+    context: "{{ argocd_context | default(omit, true) }}"
+    state: present
+    definition:
+      apiVersion: gateway.networking.k8s.io/v1
+      kind: HTTPRoute
+      metadata:
+        name: "{{ argocd_ingress_name }}"
+        namespace: "{{ argocd_namespace }}"
+        labels:
+          app.kubernetes.io/name: argocd
+          app.kubernetes.io/managed-by: ansible
+      spec:
+        parentRefs:
+          - name: "{{ argocd_gateway_name }}"
+            namespace: "{{ argocd_gateway_namespace }}"
+            sectionName: "{{ argocd_gateway_section_name }}"
+        hostnames:
+          - "{{ argocd_ingress_hostname }}"
+        rules:
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /
+            backendRefs:
+              - name: "{{ argocd_server_service_name }}"
+                port: "{{ argocd_server_service_port }}"
+  when: argocd_ingress_enabled | bool

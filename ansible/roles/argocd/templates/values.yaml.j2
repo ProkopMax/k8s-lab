@@ -1,4 +1,8 @@
 ---
+configs:
+  params:
+    server.insecure: true
+
 server:
   service:
     type: {{ argocd_server_service_type | to_json }}

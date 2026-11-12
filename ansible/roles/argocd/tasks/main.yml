@@ -7,3 +7,6 @@
 
 - name: Install Argo CD
   ansible.builtin.import_tasks: install.yml
+
+- name: Configure Argo CD ingress
+  ansible.builtin.import_tasks: httproute.yml
