@@ -1,0 +1,25 @@
+---
+- name: Install Argo CD using Helm
+  become: false
+  kubernetes.core.helm:
+    kubeconfig: "{{ argocd_kubeconfig }}"
+    context: "{{ argocd_context | default(omit, true) }}"
+
+    release_name: "{{ argocd_release_name }}"
+    release_namespace: "{{ argocd_namespace }}"
+
+    chart_ref: "{{ argocd_chart_ref }}"
+    chart_version: "{{ argocd_chart_version }}"
+
+    release_state: present
+    create_namespace: false
+
+    release_values: "{{ lookup('ansible.builtin.template', 'values.yaml.j2') | from_yaml }}"
+
+    update_repo_cache: true
+
+    wait: "{{ argocd_wait }}"
+    timeout: "{{ argocd_timeout }}"
+    atomic: true
+
+    validate_certs: true

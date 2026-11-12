@@ -1,0 +1,9 @@
+---
+- name: Configure prerequisites
+  ansible.builtin.import_tasks: prerequisites.yml
+
+- name: Create namespace
+  ansible.builtin.import_tasks: namespace.yml
+
+- name: Install Argo CD
+  ansible.builtin.import_tasks: install.yml

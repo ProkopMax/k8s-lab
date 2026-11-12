@@ -1,0 +1,20 @@
+---
+# Kubernetes
+argocd_namespace: argocd
+argocd_kubeconfig: "{{ lookup('env', 'HOME') }}/.kube/config"
+argocd_context: ""
+
+# Helm
+argocd_helm_repo_name: argo
+argocd_helm_repo_url: https://argoproj.github.io/argo-helm
+
+argocd_release_name: argocd
+argocd_chart_ref: argo/argo-cd
+argocd_chart_version: "10.18.0"
+
+# Installation
+argocd_wait: true
+argocd_timeout: 10m
+
+# Service
+argocd_server_service_type: ClusterIP

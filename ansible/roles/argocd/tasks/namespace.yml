@@ -1,0 +1,15 @@
+---
+- name: Create Argo CD namespace
+  become: false
+  kubernetes.core.k8s:
+    kubeconfig: "{{ argocd_kubeconfig }}"
+    context: "{{ argocd_context | default(omit, true) }}"
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: "{{ argocd_namespace }}"
+        labels:
+          app.kubernetes.io/name: argocd
+          app.kubernetes.io/managed-by: ansible

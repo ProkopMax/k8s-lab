@@ -1,0 +1,8 @@
+---
+- name: Add Argo CD Helm repository
+  become: false
+  kubernetes.core.helm_repository:
+    name: "{{ argocd_helm_repo_name }}"
+    repo_url: "{{ argocd_helm_repo_url }}"
+    state: present
+    force_update: false
