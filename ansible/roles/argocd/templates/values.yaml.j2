@@ -2,3 +2,8 @@
 server:
   service:
     type: {{ argocd_server_service_type | to_json }}
+
+redis:
+  image:
+    repository: {{ argocd_redis_image_repository | to_json }}
+    tag: {{ argocd_redis_image_tag | to_json }}
