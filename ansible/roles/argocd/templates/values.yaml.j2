@@ -7,6 +7,15 @@ server:
   service:
     type: {{ argocd_server_service_type | to_json }}
 
+repoServer:
+  env:
+    - name: HTTP_PROXY
+      value: {{ argocd_repo_server_proxy_env.HTTP_PROXY | to_json }}
+    - name: HTTPS_PROXY
+      value: {{ argocd_repo_server_proxy_env.HTTPS_PROXY | to_json }}
+    - name: NO_PROXY
+      value: {{ argocd_repo_server_proxy_env.NO_PROXY | to_json }}
+
 redis:
   image:
     repository: {{ argocd_redis_image_repository | to_json }}

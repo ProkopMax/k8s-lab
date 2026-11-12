@@ -33,3 +33,6 @@ argocd_gateway_section_name: https
 
 argocd_server_service_name: argocd-server
 argocd_server_service_port: 80
+
+# Proxy
+argocd_repo_server_proxy_env: "{{ proxy_env }}"
